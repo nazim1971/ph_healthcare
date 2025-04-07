@@ -1,5 +1,3 @@
-
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -7,4 +5,43 @@ generator client {
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
+}
+
+model user {
+  id                 String     @default(uuid())
+  email              String     @unique
+  password           String
+  role               UserRole
+  needPasswordChange Boolean
+  status             UserStatus
+  createdAt          DateTime   @default(now())
+  updatedAt          DateTime   @updatedAt()
+  admin              admin?
+
+  @@map("users")
+}
+
+model admin {
+  id           String   @default(uuid())
+  name         String
+  email        String   @unique
+  profilePhoto String?
+  isDeleted    Boolean
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt()
+  user         user     @relation(fields: [email], references: [email])
+
+  @@map("admins")
+}
+
+enum UserRole {
+  SUPER_ADMIN
+  ADMIN
+  DOCTOR
+  PATIENT
+}
+
+enum UserStatus {
+  ACTIVE
+  BLOCKED
 }
