@@ -1,0 +1,4 @@
+pn i @prisma/client @types/cookie-parser axios bcrypt cloudinary cookie-parser cors date-fns dotenv express http-status jsonwebtoken luxon multer node-cron nodemailer sslcommerz-lts uuid zod
+
+
+pn i  @types/bcrypt @types/cors @types/express @types/jsonwebtoken @types/luxon @types/multer @types/node @types/node-cron @types/nodemailer @types/uuid prisma ts-node ts-node-dev typescript --D
