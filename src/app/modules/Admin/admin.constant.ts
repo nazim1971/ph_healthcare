@@ -1,0 +1,1 @@
+export const adminFilterAbleFields = ["name", "email", "searchTerm"];
