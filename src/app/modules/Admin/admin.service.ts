@@ -1,28 +1,13 @@
-import { Prisma, PrismaClient } from "@prisma/client";
+import { Prisma } from "@prisma/client";
 import { number } from "zod";
-
-const prisma = new PrismaClient();
+import { paginationHelper } from "../../../helper/paginationHelper";
+import prisma from "../../shared/prisma";
 
 const getAllAdmin = async (params: any, options: any) => {
   console.log({ params });
 
-  const calculatePagination = (options: {
-    page?: number;
-    limit?: number;
-    sortBy?: string;
-    sortOrder?: string;
-  }) => {
-    const page: number = Number(options.page) || 1;
-    const limit: number = Number(options.limit) || 10;
-    const skip: number =  (Number(page) - 1) * limit ;
-    const sortBy: string = options.sortBy || 'createdAt';
-    const sortOrder: string = options.sortOrder || 'desc';
-    return  {
-        page, limit, skip, sortBy, sortOrder
-    }
-  };
-
-  const { limit, page, sortBy, sortOrder, skip } = calculatePagination(options);
+  const { limit, page, sortBy, sortOrder, skip } =
+    paginationHelper.calculatePagination(options);
   const { searchTerm, ...filterData } = params;
   const condition: Prisma.adminWhereInput[] = [];
   // if(params.searchTerm){
@@ -78,7 +63,14 @@ const getAllAdmin = async (params: any, options: any) => {
             createdAt: "asc",
           },
   });
-  return result;
+
+  const total = await prisma.admin.count({
+    where: whereConditions
+  });
+  return {
+    meta: { page, limit, total },
+    data: result
+  };
 };
 
 export const AdminService = {
