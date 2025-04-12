@@ -1,5 +1,4 @@
-import { Prisma } from "@prisma/client";
-import { number } from "zod";
+import { admin, Prisma } from "@prisma/client";
 import { paginationHelper } from "../../../helper/paginationHelper";
 import prisma from "../../shared/prisma";
 
@@ -65,14 +64,63 @@ const getAllAdmin = async (params: any, options: any) => {
   });
 
   const total = await prisma.admin.count({
-    where: whereConditions
+    where: whereConditions,
   });
   return {
     meta: { page, limit, total },
-    data: result
+    data: result,
   };
+};
+
+const getByIdFromDB = async (id: string) => {
+  const result = await prisma.admin.findUnique({
+    where: {
+      id,
+    },
+  });
+  return result;
+};
+
+const updateIntoDB = async (id: string, data: Partial<admin>) => {
+  await prisma.admin.findFirstOrThrow({
+    where: {
+      id,
+    },
+  });
+
+  const result = await prisma.admin.update({
+    where: {
+      id,
+    },
+    data,
+  });
+
+  return result;
+};
+
+const deleteFromDB = async (id: string) => {
+  const result = await prisma.$transaction(async(transactionClient)=>{
+    const adminDeletedDate = await transactionClient.admin.delete({
+      where: {
+        id
+      }
+    })
+
+    const userDeletedData = await transactionClient.user.delete({
+      where: {
+        email: adminDeletedDate.email
+      }
+    })
+
+    return adminDeletedDate
+  })
+
+  return result;
 };
 
 export const AdminService = {
   getAllAdmin,
+  getByIdFromDB,
+  updateIntoDB,
+  deleteFromDB,
 };

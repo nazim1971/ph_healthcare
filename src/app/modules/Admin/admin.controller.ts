@@ -26,6 +26,63 @@ const getAllAdmin = async (req: Request, res: Response) => {
   }
 };
 
+const getByIdFromDB = async(req: Request, res: Response) =>{
+  const {id} = req.params;
+  try {
+    const result = await AdminService.getByIdFromDB(id);
+    res.status(200).json({
+      success: true,
+      message: "Admin reteved Successfully",
+      data: result
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: error?.name || "Something went wrong",
+      error: error,
+    });
+  }
+}
+
+const updateIntoDb = async(req: Request, res: Response)=>{
+  const {id} = req.params;
+  try {
+    const result = await AdminService.updateIntoDB(id, req.body);
+    res.status(200).json({
+      success: true,
+      message: "Admin reteved Successfully",
+      data: result
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: error?.name || "Something went wrong",
+      error: error,
+    });
+  }
+}
+
+const deletedFromDB = async(req: Request, res: Response)=>{
+  const {id} = req.params;
+  try {
+    const result = await AdminService.deleteFromDB(id);
+    res.status(200).json({
+      success: true,
+      message: "Admin Data deleted Successfully",
+      data: result
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: error?.name || "Something went wrong",
+      error: error,
+    });
+  }
+}
+
 export const AdminController = {
   getAllAdmin,
+  getByIdFromDB,
+  updateIntoDb,
+  deletedFromDB
 };
