@@ -1,7 +1,10 @@
+import { NextFunction } from 'express';
 import express, { Application, Request, Response } from 'express';
 import cors from 'cors';
-import { userRoutes } from './app/modules/User/user.routes';
 import router from './app/routes';
+import  httpStatus  from 'http-status';
+import { globalErrorHandler } from './middlewires/globalErrorHandler';
+import { notFoundError } from './middlewires/notFoundError';
 
 const app: Application = express();
 app.use(cors());
@@ -15,6 +18,9 @@ app.get('/', (req: Request, res: Response) => {
     })
 })
 
-app.use('/api/v1', router)
+app.use('/api/v1', router);
+
+app.use(globalErrorHandler);
+app.use(notFoundError)
 
 export default app;
