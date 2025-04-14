@@ -1,8 +1,10 @@
 import { admin, Prisma, UserStatus } from "@prisma/client";
 import { paginationHelper } from "../../../helper/paginationHelper";
 import prisma from "../../shared/prisma";
+import { TAdminFilterReq } from "./admin.interface";
+import { TPagination } from "../../interfaces/pagination.types";
 
-const getAllAdmin = async (params: any, options: any) => {
+const getAllAdmin = async (params: TAdminFilterReq, options: TPagination ) => {
   console.log({ params });
 
   const { limit, page, sortBy, sortOrder, skip } =
