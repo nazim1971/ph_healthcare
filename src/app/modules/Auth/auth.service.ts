@@ -1,12 +1,16 @@
 import prisma from "../../shared/prisma";
 import bcrypt from "bcrypt";
-import jwt from "jsonwebtoken";
+import jwt, { JwtPayload } from "jsonwebtoken";
+import { jwtHelpers } from "../../../helper/jwtHelper";
+import { UserStatus } from "@prisma/client";
+import config from "../../config";
 
 const loginUser = async (payload: { email: string; password: string }) => {
   console.log("User login");
   const userData = await prisma.user.findUniqueOrThrow({
     where: {
       email: payload.email,
+      status: UserStatus.ACTIVE
     },
   });
   console.log({ payload });
@@ -19,32 +23,24 @@ const loginUser = async (payload: { email: string; password: string }) => {
     throw new Error("Password Incorrect");
   }
 
-  const accessToken = jwt.sign(
+  const accessToken = jwtHelpers.generateToken(
     {
       email: userData.email,
       role: userData.role,
     },
-    "Nazim",
-    {
-      algorithm: "HS256",
-      expiresIn: "5m",
-    }
+    config.jwtS,
+    config.jwtExp
   );
 
-  const refreshToken = jwt.sign(
+  const refreshToken = jwtHelpers.generateToken(
     {
       email: userData.email,
       role: userData.role,
     },
-    "pokpok",
-    {
-      algorithm: "HS256",
-      expiresIn: "30d",
-    }
+    config.refreshS,
+    config.refreshExp
   );
 
-  console.log(accessToken);
-  console.log(isPasswordCorrect);
   return {
     accessToken,
     refreshToken,
@@ -52,6 +48,40 @@ const loginUser = async (payload: { email: string; password: string }) => {
   };
 };
 
+const refreshToken = async(token: string)=>{
+
+    let decodedData;
+   try {
+     decodedData = jwtHelpers.verifyToken(token, 'duckduck') as JwtPayload
+   } catch (error) {
+    throw new Error("You are not authorized")
+   }
+   const userData = await prisma.user.findUniqueOrThrow({
+    where:{
+        email: decodedData?.email,
+        status: UserStatus.ACTIVE
+    }
+   });
+
+   const accessToken = jwtHelpers.generateToken(
+    {
+      email: userData.email,
+      role: userData.role,
+    },
+    "Nazim",
+    "5m"
+  );
+
+   return {
+    accessToken,
+    refreshToken,
+    needPasswordChange: userData.needPasswordChange,
+  };
+
+}
+
+
 export const authServices = {
   loginUser,
+  refreshToken
 };
