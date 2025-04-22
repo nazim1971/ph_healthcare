@@ -23,6 +23,21 @@ class Config{
         if(!process.env.REFRESH_TOKEN_EXPIRES_IN){
             throw new Error('REFRESH_TOKEN_EXPIRES_IN is required in .env file');
         }
+        if(!process.env.RESET_PASS_TOKEN){
+          throw new Error('RESET_PASS_TOKEN is required in .env file');
+      }
+      if(!process.env.RESET_PASS_EXPIRES_IN){
+        throw new Error('RESET_PASS_EXPIRES_IN is required in .env file');
+    }
+    if(!process.env.RESET_PASS_LINK){
+      throw new Error('RESET_PASS_LINK is required in .env file');
+  }
+  if(!process.env.EMAIL){
+    throw new Error('Email is required in .env file');
+}
+if(!process.env.EMAIL_PASS){
+  throw new Error('Email pass is required in .env file');
+}
     }
 
     // Getters for environment variables
@@ -43,6 +58,21 @@ class Config{
   }
   public get refreshExp(): string {
     return String(process.env.REFRESH_TOKEN_EXPIRES_IN);
+  }
+  public get  resetPassS(): string {
+    return String(process.env.RESET_PASS_TOKEN);
+  }
+  public get  resetPassExp(): string {
+    return String(process.env.RESET_PASS_EXPIRES_IN);
+  }
+  public get  resetPassLink(): string {
+    return String(process.env.RESET_PASS_LINK);
+  }
+  public get  email(): string {
+    return String(process.env.EMAIL);
+  }
+  public get  emailPass(): string {
+    return String(process.env.EMAIL_PASS);
   }
 }
 

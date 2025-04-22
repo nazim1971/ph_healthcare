@@ -20,7 +20,7 @@ const auth = (...roles: UserRole[]) => {
         token,
         config.jwtS,
       ) as CustomPayload;
-      
+      req.user = decoded;
       console.log(decoded);
       const { email, role } = decoded;
   
