@@ -32,11 +32,11 @@ class Config{
     if(!process.env.RESET_PASS_LINK){
       throw new Error('RESET_PASS_LINK is required in .env file');
   }
-  if(!process.env.EMAIL){
-    throw new Error('Email is required in .env file');
+  if(!process.env.NODE_EMAIL){
+    throw new Error('NODE Email is required in .env file');
 }
-if(!process.env.EMAIL_PASS){
-  throw new Error('Email pass is required in .env file');
+if(!process.env.NODE_EMAIL_PASS){
+  throw new Error('NODE Email pass is required in .env file');
 }
     }
 
@@ -68,11 +68,11 @@ if(!process.env.EMAIL_PASS){
   public get  resetPassLink(): string {
     return String(process.env.RESET_PASS_LINK);
   }
-  public get  email(): string {
-    return String(process.env.EMAIL);
+  public get  nodeEmail(): string {
+    return String(process.env.NODE_EMAIL);
   }
-  public get  emailPass(): string {
-    return String(process.env.EMAIL_PASS);
+  public get  nodeEmailPass(): string {
+    return String(process.env.NODE_EMAIL_PASS);
   }
 }
 
